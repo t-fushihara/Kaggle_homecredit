@@ -40,4 +40,5 @@ def missing_check(data,head_count=5):
     total = data.isnull().sum().sort_values(ascending=False)
     percent = (data.isnull().sum()/data.isnull().count()).sort_values(ascending=False)
     missing_data = pd.concat([total, percent],axis=1, keys=['Total','Percent'])
+    print('Number of missing columns:', len(missing_data[missing_data['Percent']>0]))
     return missing_data

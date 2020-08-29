@@ -159,3 +159,28 @@ def one_hot_encoder(df, nan_as_category = True):
     df = pd.get_dummies(df, columns= categorical_columns, dummy_na= nan_as_category)
     new_columns = [c for c in df.columns if c not in original_columns]
     return df, new_columns
+
+def kde_target(var_name,tar_name, df):
+    # ターゲットが2値変数の時だけ使える
+    # Calculate the correlation coefficient between the new variable and the target
+    corr = df[tar_name].corr(df[var_name])
+
+    # Calculate medians for repaid vs not repaid
+    avg_repaid = df.loc[df[tar_name] == 0, var_name].median()
+    avg_not_repaid = df.loc[df[tar_name] == 1, var_name].median()
+
+    plt.figure(figsize = (9, 6))
+
+    # Plot the distribution for target == 0 and target == 1
+    sns.kdeplot(df.loc[df[tar_name] == 0, var_name], label = 'TARGET == 0')
+    sns.kdeplot(df.loc[df[tar_name] == 1, var_name], label = 'TARGET == 1')
+
+    # label the plot
+    plt.xlabel(var_name); plt.ylabel('Density'); plt.title('%s Distribution' % var_name)
+    plt.legend();
+
+    # print out the correlation
+    print('The correlation between %s and the TARGET is %0.4f' % (var_name, corr))
+    # Print out average values
+    print('Median value for loan that was not repaid = %0.4f' % avg_not_repaid)
+    print('Median value for loan that was repaid =     %0.4f' % avg_repaid)
